@@ -16,6 +16,11 @@ private:
 	void Update(float deltaTimeSeconds) override;
 	void FrameEnd() override;
 
+	void RenderSimpleMesh(Mesh* mesh, Shader* shader, const glm::mat4& modelMatrix);
+	Mesh* CreateMesh(const char* name, const std::vector<VertexFormat>& vertices, const std::vector<unsigned short>& indices);
+	void createPlayerMesh();
+	void createPlatformMesh();
+
 	void OnInputUpdate(float deltaTime, int mods) override;
 	void OnKeyPress(int key, int mods) override;
 	void OnKeyRelease(int key, int mods) override;

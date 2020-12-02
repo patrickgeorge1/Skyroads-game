@@ -1,0 +1,1 @@
+#define SPHERE_RADIUS 0.5f
