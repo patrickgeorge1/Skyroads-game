@@ -5,6 +5,7 @@
 #include <Core/Engine.h>
 
 #include "../Tema2/Utils/Position/Position3D.h"
+#include "Utils/Platform/Platform.h"
 #include "Defines.h"
 
 class Tema2 : public SimpleScene {
@@ -22,7 +23,10 @@ private:
 	void RenderSimpleMesh(Mesh* mesh, Shader* shader, const glm::mat4& modelMatrix);
 	Mesh* CreateMesh(const char* name, const std::vector<VertexFormat>& vertices, const std::vector<unsigned short>& indices);
 	void createPlayerMesh();
-	void createPlatformMesh();
+	void createGreenPlatformMesh();
+	void createRedPlatformMesh();
+	void createYellowPlatformMesh();
+	void createOrangePlatformMesh();
 	void setCameraFirstPerson();
 	void setCameraThirdPerson();
 
@@ -39,4 +43,6 @@ protected:
 	glm::mat3 modelMatrix;
 	Position3D pos = Position3D(0, SPHERE_DEFAULT_HEIGHT, 0);
 	bool cameraIsThirdPerson = true;
+
+	Platform platforms[MAX_PLATFORM_NUMBER];
 };

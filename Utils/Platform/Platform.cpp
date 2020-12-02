@@ -14,3 +14,8 @@ Platform::Platform(Position3D pos, bool isOut, int type)
 Platform::~Platform()
 {
 }
+
+void Platform::movePlatformToColumn()
+{
+	pos.x = (-1) * column * PLATFORM_WIDTH + (PLATFORM_WIDTH / 2);
+}

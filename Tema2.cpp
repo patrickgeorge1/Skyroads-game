@@ -2,12 +2,17 @@
 
 #include <vector>
 #include <iostream>
+#include <cstdlib>
+#include <ctime>
+
 #include <Core/Engine.h>
 #include "Transformations/Object2D.h"
 #include "Transformations/Transform2D.h"
 #include "Defines.h"
 
 using namespace std;
+
+const char *platform_mesh_name[4] = { RED_PLATFORM_NAME,  YELLOW_PLATFORM_NAME, ORANGE_PLATFORM_NAME, GREEN_PLATFORM_NAME};
 
 Tema2::Tema2()
 {
@@ -26,20 +31,20 @@ void Tema2::createPlayerMesh()
 	}
 }
 
-void Tema2::createPlatformMesh()
+void Tema2::createRedPlatformMesh()
 {
 	// Create a simple cube
 	{
 		vector<VertexFormat> vertices
 		{
-			VertexFormat(glm::vec3(-1, -1,  1), glm::vec3(0, 1, 1), glm::vec3(0.2, 0.8, 0.2)),
-			VertexFormat(glm::vec3(1, -1,  1), glm::vec3(1, 0, 1), glm::vec3(0.9, 0.4, 0.2)),
+			VertexFormat(glm::vec3(-1, -1,  1), glm::vec3(1, 0, 0), glm::vec3(0.2, 0.8, 0.2)),
+			VertexFormat(glm::vec3(1, -1,  1), glm::vec3(1, 0, 0), glm::vec3(0.9, 0.4, 0.2)),
 			VertexFormat(glm::vec3(-1,  1,  1), glm::vec3(1, 0, 0), glm::vec3(0.7, 0.7, 0.1)),
-			VertexFormat(glm::vec3(1,  1,  1), glm::vec3(0, 1, 0), glm::vec3(0.7, 0.3, 0.7)),
-			VertexFormat(glm::vec3(-1, -1, -1), glm::vec3(1, 1, 1), glm::vec3(0.3, 0.5, 0.4)),
-			VertexFormat(glm::vec3(1, -1, -1), glm::vec3(0, 1, 1), glm::vec3(0.5, 0.2, 0.9)),
-			VertexFormat(glm::vec3(-1,  1, -1), glm::vec3(1, 1, 0), glm::vec3(0.7, 0.0, 0.7)),
-			VertexFormat(glm::vec3(1,  1, -1), glm::vec3(0, 0, 1), glm::vec3(0.1, 0.5, 0.8)),
+			VertexFormat(glm::vec3(1,  1,  1), glm::vec3(1, 0, 0), glm::vec3(0.7, 0.3, 0.7)),
+			VertexFormat(glm::vec3(-1, -1, -1), glm::vec3(1, 0, 0), glm::vec3(0.3, 0.5, 0.4)),
+			VertexFormat(glm::vec3(1, -1, -1), glm::vec3(1, 0, 0), glm::vec3(0.5, 0.2, 0.9)),
+			VertexFormat(glm::vec3(-1,  1, -1), glm::vec3(1, 0, 0), glm::vec3(0.7, 0.0, 0.7)),
+			VertexFormat(glm::vec3(1,  1, -1), glm::vec3(1, 0, 0), glm::vec3(0.1, 0.5, 0.8)),
 		};
 
 		vector<unsigned short> indices =
@@ -52,7 +57,94 @@ void Tema2::createPlatformMesh()
 			2, 6, 4,		0, 2, 4,
 		};
 
-		CreateMesh("platform", vertices, indices);
+		CreateMesh(RED_PLATFORM_NAME, vertices, indices);
+	}
+}
+void Tema2::createYellowPlatformMesh()
+{
+	// Create a simple cube
+	{
+		vector<VertexFormat> vertices
+		{
+			VertexFormat(glm::vec3(-1, -1,  1), glm::vec3(1, 1, 0), glm::vec3(0.2, 0.8, 0.2)),
+			VertexFormat(glm::vec3(1, -1,  1), glm::vec3(1, 1, 0), glm::vec3(0.9, 0.4, 0.2)),
+			VertexFormat(glm::vec3(-1,  1,  1), glm::vec3(1, 1, 0), glm::vec3(0.7, 0.7, 0.1)),
+			VertexFormat(glm::vec3(1,  1,  1), glm::vec3(1, 1, 0), glm::vec3(0.7, 0.3, 0.7)),
+			VertexFormat(glm::vec3(-1, -1, -1), glm::vec3(1, 1, 0), glm::vec3(0.3, 0.5, 0.4)),
+			VertexFormat(glm::vec3(1, -1, -1), glm::vec3(1, 1, 0), glm::vec3(0.5, 0.2, 0.9)),
+			VertexFormat(glm::vec3(-1,  1, -1), glm::vec3(1, 1, 0), glm::vec3(0.7, 0.0, 0.7)),
+			VertexFormat(glm::vec3(1,  1, -1), glm::vec3(1, 1, 0), glm::vec3(0.1, 0.5, 0.8)),
+		};
+
+		vector<unsigned short> indices =
+		{
+			0, 1, 2,		1, 3, 2,
+			2, 3, 7,		2, 7, 6,
+			1, 7, 3,		1, 5, 7,
+			6, 7, 4,		7, 5, 4,
+			0, 4, 1,		1, 4, 5,
+			2, 6, 4,		0, 2, 4,
+		};
+
+		CreateMesh(YELLOW_PLATFORM_NAME, vertices, indices);
+	}
+}
+void Tema2::createOrangePlatformMesh()
+{
+	// Create a simple cube
+	{
+		vector<VertexFormat> vertices
+		{
+			VertexFormat(glm::vec3(-1, -1,  1), glm::vec3(1, 0.4f, 0), glm::vec3(0.2, 0.8, 0.2)),
+			VertexFormat(glm::vec3(1, -1,  1), glm::vec3(1, 0.4f, 0), glm::vec3(0.9, 0.4, 0.2)),
+			VertexFormat(glm::vec3(-1,  1,  1), glm::vec3(1, 0.4f, 0), glm::vec3(0.7, 0.7, 0.1)),
+			VertexFormat(glm::vec3(1,  1,  1), glm::vec3(1, 0.4f, 0), glm::vec3(0.7, 0.3, 0.7)),
+			VertexFormat(glm::vec3(-1, -1, -1), glm::vec3(1, 0.4f, 0), glm::vec3(0.3, 0.5, 0.4)),
+			VertexFormat(glm::vec3(1, -1, -1), glm::vec3(1, 0.4f, 0), glm::vec3(0.5, 0.2, 0.9)),
+			VertexFormat(glm::vec3(-1,  1, -1), glm::vec3(1, 0.4f, 0), glm::vec3(0.7, 0.0, 0.7)),
+			VertexFormat(glm::vec3(1,  1, -1), glm::vec3(1, 0.4f, 0), glm::vec3(0.1, 0.5, 0.8)),
+		};
+
+		vector<unsigned short> indices =
+		{
+			0, 1, 2,		1, 3, 2,
+			2, 3, 7,		2, 7, 6,
+			1, 7, 3,		1, 5, 7,
+			6, 7, 4,		7, 5, 4,
+			0, 4, 1,		1, 4, 5,
+			2, 6, 4,		0, 2, 4,
+		};
+
+		CreateMesh(ORANGE_PLATFORM_NAME, vertices, indices);
+	}
+}
+void Tema2::createGreenPlatformMesh()
+{
+	// Create a simple cube
+	{
+		vector<VertexFormat> vertices
+		{
+			VertexFormat(glm::vec3(-1, -1,  1), glm::vec3(0, 1, 0), glm::vec3(0.2, 0.8, 0.2)),
+			VertexFormat(glm::vec3(1, -1,  1), glm::vec3(0, 1, 0), glm::vec3(0.9, 0.4, 0.2)),
+			VertexFormat(glm::vec3(-1,  1,  1), glm::vec3(0, 1, 0), glm::vec3(0.7, 0.7, 0.1)),
+			VertexFormat(glm::vec3(1,  1,  1), glm::vec3(0, 1, 0), glm::vec3(0.7, 0.3, 0.7)),
+			VertexFormat(glm::vec3(-1, -1, -1), glm::vec3(0, 1, 0), glm::vec3(0.3, 0.5, 0.4)),
+			VertexFormat(glm::vec3(1, -1, -1), glm::vec3(0, 1, 0), glm::vec3(0.5, 0.2, 0.9)),
+			VertexFormat(glm::vec3(-1,  1, -1), glm::vec3(0, 1, 0), glm::vec3(0.7, 0.0, 0.7)),
+			VertexFormat(glm::vec3(1,  1, -1), glm::vec3(0, 1, 0), glm::vec3(0.1, 0.5, 0.8)),
+		};
+
+		vector<unsigned short> indices =
+		{
+			0, 1, 2,		1, 3, 2,
+			2, 3, 7,		2, 7, 6,
+			1, 7, 3,		1, 5, 7,
+			6, 7, 4,		7, 5, 4,
+			0, 4, 1,		1, 4, 5,
+			2, 6, 4,		0, 2, 4,
+		};
+
+		CreateMesh(GREEN_PLATFORM_NAME, vertices, indices);
 	}
 }
 
@@ -72,7 +164,10 @@ void Tema2::Init()
 
 	// init meshes
 	createPlayerMesh();
-	createPlatformMesh();
+	createRedPlatformMesh();
+	createYellowPlatformMesh();
+	createOrangePlatformMesh();
+	createGreenPlatformMesh();
 
 
 	// Create a shader program for drawing face polygon with the color of the normal
@@ -82,6 +177,30 @@ void Tema2::Init()
 		shader->AddShader("Source/Laboratoare/Tema2/Shaders/FragmentShader.glsl", GL_FRAGMENT_SHADER);
 		shader->CreateAndLink();
 		shaders[shader->GetName()] = shader;
+	}
+
+
+	srand((unsigned int)time(NULL));
+
+	
+	// render platforms
+	{
+
+		
+		int lastColumnPos[MAX_PLATFORM_COLUMNS] = {0};
+		int half = MAX_PLATFORM_COLUMNS / 2;
+		int offset = half * (PLATFORM_WIDTH + GAP_BETWEEN_PLATFORMS_SIZE);
+
+		for (int i = 0; i < MAX_PLATFORM_NUMBER; i++) {
+			platforms[i].column = i % MAX_PLATFORM_COLUMNS;
+			platforms[i].pos.z = (-1) * (lastColumnPos[platforms[i].column]);
+			platforms[i].pos.y = (-1) * (PLATFORM_HEIGHT);
+			platforms[i].pos.x = offset -  (platforms[i].column * (PLATFORM_WIDTH + GAP_BETWEEN_PLATFORMS_SIZE));
+			platforms[i].isOutOfScreen = false;
+			platforms[i].type = rand() % 4;
+			lastColumnPos[platforms[i].column] += PLATFORM_LENGTH + GAP_BETWEEN_PLATFORMS_SIZE;
+			//cout << platforms[i].column << " - (" << platforms[i].pos.x << "," << platforms[i].pos.y << "," << platforms[i].pos.z << ")" << endl;
+		}
 	}
 }
 
@@ -104,12 +223,31 @@ void Tema2::Update(float deltaTimeSeconds)
 		if (!cameraIsThirdPerson) setCameraFirstPerson();
 	}
 
+
+	// RENDER PLATFORMS
+	{
+		for (int i = 0; i < MAX_PLATFORM_NUMBER; i++) {
+			glm::mat4 modelMatrix = glm::mat4(1);
+			modelMatrix = glm::translate(modelMatrix, glm::vec3(platforms[i].pos.x, platforms[i].pos.y, platforms[i].pos.z));
+			modelMatrix = glm::scale(modelMatrix, glm::vec3(PLATFORM_WIDTH / 2, PLATFORM_HEIGHT, PLATFORM_LENGTH / 2));
+			RenderSimpleMesh(meshes[platform_mesh_name[platforms[i].type]], shaders["PatrickShader"], modelMatrix);
+		}
+	}
+	
 	// RENDER PLAYER
 	{
 		glm::mat4 modelMatrix = glm::mat4(1);
 		modelMatrix = glm::translate(modelMatrix, glm::vec3(pos.x, pos.y, pos.z));
 		RenderSimpleMesh(meshes["player"], shaders["PatrickShader"], modelMatrix);
 	}
+
+	//// RENDER PLATFORM
+	//{
+	//	glm::mat4 modelMatrix = glm::mat4(1);
+	//	modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 1, 0));
+	//	//modelMatrix = glm::scale(modelMatrix, glm::vec3(0.5f));
+	//	RenderSimpleMesh(meshes["platform"], shaders["PatrickShader"], modelMatrix);
+	//}
 }
 
 void Tema2::setCameraFirstPerson()

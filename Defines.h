@@ -3,6 +3,7 @@
 #define GAP_BETWEEN_PLATFORMS_SIZE 1
 #define PLATFORM_WIDTH 2
 #define PLATFORM_LENGTH 4.0f
+#define PLATFORM_HEIGHT 0.1f
 #define	init_window_width 2300
 #define	init_window_height 1000
 
@@ -14,6 +15,7 @@
 
 // INSTACE NUMBERS
 #define MAX_PLATFORM_NUMBER 30
+#define MAX_PLATFORM_COLUMNS 3
 
 
 // PLATFORM TYPES
@@ -21,6 +23,11 @@
 #define YELLOW_PLATFORM 1
 #define ORANGE_PLATFORM 2
 #define GREEN_PLATFORM 3
+#define RED_PLATFORM_NAME "platformRed"
+#define YELLOW_PLATFORM_NAME "platformYellow"
+#define ORANGE_PLATFORM_NAME "platformOrange"
+#define GREEN_PLATFORM_NAME "platformGreen"
+
 
 
 // GAME PARAMETERS 

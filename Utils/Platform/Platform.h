@@ -11,8 +11,11 @@ public:
 	~Platform();
 
 	Position3D pos = Position3D();
-	bool isOutOfScreen = false;
+	bool isOutOfScreen = true;
 	int type = GREEN_PLATFORM;
+	int column = 0;
+
+	void movePlatformToColumn();
 };
 
 #endif
