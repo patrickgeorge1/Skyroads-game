@@ -4,6 +4,9 @@
 #include <string>
 #include <Core/Engine.h>
 
+#include "../Tema2/Utils/Position/Position3D.h"
+#include "Defines.h"
+
 class Tema2 : public SimpleScene {
 public:
 	Tema2();
@@ -20,6 +23,8 @@ private:
 	Mesh* CreateMesh(const char* name, const std::vector<VertexFormat>& vertices, const std::vector<unsigned short>& indices);
 	void createPlayerMesh();
 	void createPlatformMesh();
+	void setCameraFirstPerson();
+	void setCameraThirdPerson();
 
 	void OnInputUpdate(float deltaTime, int mods) override;
 	void OnKeyPress(int key, int mods) override;
@@ -32,4 +37,6 @@ private:
 
 protected:
 	glm::mat3 modelMatrix;
+	Position3D pos = Position3D(0, SPHERE_DEFAULT_HEIGHT, 0);
+	bool cameraIsThirdPerson = true;
 };

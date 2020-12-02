@@ -58,6 +58,19 @@ void Tema2::createPlatformMesh()
 
 void Tema2::Init()
 {
+	// set camera and world
+	{
+		window->SetSize(init_window_width, init_window_height);
+		glm::ivec2 resolution = window->GetResolution();
+		auto camera = GetSceneCamera();
+		camera->SetPosition(glm::vec3(CAMERA_X_THIRD, CAMERA_Y_THIRD, CAMERA_Z_THIRD));
+		camera->Update();
+		GetCameraInput()->SetActive(false);
+	}
+
+
+
+	// init meshes
 	createPlayerMesh();
 	createPlatformMesh();
 
@@ -86,15 +99,32 @@ void Tema2::FrameStart()
 
 void Tema2::Update(float deltaTimeSeconds)
 {
+	// MOVE FIRST PERSON CAMERA
+	{
+		if (!cameraIsThirdPerson) setCameraFirstPerson();
+	}
+
 	// RENDER PLAYER
 	{
 		glm::mat4 modelMatrix = glm::mat4(1);
-		modelMatrix = glm::translate(modelMatrix, glm::vec3(0, SPHERE_RADIUS, 0));
-		//modelMatrix = glm::rotate(modelMatrix, RADIANS(60.0f), glm::vec3(1, 0, 0));
-		//modelMatrix = glm::scale(modelMatrix, glm::vec3(0.5f));
+		modelMatrix = glm::translate(modelMatrix, glm::vec3(pos.x, pos.y, pos.z));
 		RenderSimpleMesh(meshes["player"], shaders["PatrickShader"], modelMatrix);
 	}
 }
+
+void Tema2::setCameraFirstPerson()
+{
+	auto camera = GetSceneCamera();
+	camera->SetPosition(glm::vec3(CAMERA_X_FIRST + pos.x, CAMERA_Y_FIRST, CAMERA_Z_FIRST));
+	camera->Update();
+}
+void Tema2::setCameraThirdPerson()
+{
+	auto camera = GetSceneCamera();
+	camera->SetPosition(glm::vec3(CAMERA_X_THIRD, CAMERA_Y_THIRD, CAMERA_Z_THIRD));
+	camera->Update();
+}
+
 
 Mesh* Tema2::CreateMesh(const char* name, const std::vector<VertexFormat>& vertices, const std::vector<unsigned short>& indices)
 {
@@ -195,8 +225,6 @@ void Tema2::RenderSimpleMesh(Mesh* mesh, Shader* shader, const glm::mat4& modelM
 }
 
 
-
-
 void Tema2::FrameEnd()
 {
 	DrawTemaCoordinat();
@@ -205,12 +233,26 @@ void Tema2::FrameEnd()
 
 void Tema2::OnInputUpdate(float deltaTime, int mods)
 {
+	if (window->KeyHold(GLFW_KEY_A))
+	{
+		pos.x = glm::max(PLAYER_MAX_LEFT, pos.x - PLAYER_X_MOVE_STEP);
+	}
 
+	if (window->KeyHold(GLFW_KEY_D))
+	{
+		pos.x = glm::min(PLAYER_MAX_RIGHT, pos.x + PLAYER_X_MOVE_STEP);
+	}
 }
 
 void Tema2::OnKeyPress(int key, int mods)
 {
-	// add key press event
+	if (key == GLFW_KEY_C)
+	{
+		cameraIsThirdPerson = cameraIsThirdPerson ^ true ^ false;
+		if (cameraIsThirdPerson) setCameraThirdPerson();
+		else setCameraFirstPerson();
+		cout << (cameraIsThirdPerson ? "third" : "first") << endl;
+	}
 }
 
 void Tema2::OnKeyRelease(int key, int mods)

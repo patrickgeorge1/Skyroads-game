@@ -1,1 +1,33 @@
+// DIMENSIONS  !important
 #define SPHERE_RADIUS 0.5f
+#define GAP_BETWEEN_PLATFORMS_SIZE 1
+#define PLATFORM_WIDTH 2
+#define PLATFORM_LENGTH 4.0f
+#define	init_window_width 2300
+#define	init_window_height 1000
+
+// POSITIONS
+#define SPHERE_DEFAULT_HEIGHT SPHERE_RADIUS
+#define PLAYER_MAX_LEFT -4.f
+#define PLAYER_MAX_RIGHT 4.f
+
+
+// INSTACE NUMBERS
+#define MAX_PLATFORM_NUMBER 30
+
+
+// PLATFORM TYPES
+#define RED_PLATFORM 0
+#define YELLOW_PLATFORM 1
+#define ORANGE_PLATFORM 2
+#define GREEN_PLATFORM 3
+
+
+// GAME PARAMETERS 
+#define PLAYER_X_MOVE_STEP 0.05f
+#define CAMERA_X_THIRD 0
+#define CAMERA_Y_THIRD 2
+#define CAMERA_Z_THIRD 4
+#define CAMERA_X_FIRST 0
+#define CAMERA_Y_FIRST 0.5f
+#define CAMERA_Z_FIRST -1
