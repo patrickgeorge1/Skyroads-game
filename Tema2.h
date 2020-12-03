@@ -28,6 +28,7 @@ private:
 	void createRedPlatformMesh();
 	void createYellowPlatformMesh();
 	void createOrangePlatformMesh();
+	void createPurplePlatformMesh();
 	void setCameraFirstPerson();
 	void setCameraThirdPerson();
 

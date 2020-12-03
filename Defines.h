@@ -28,6 +28,7 @@
 #define YELLOW_PLATFORM_NAME "platformYellow"
 #define ORANGE_PLATFORM_NAME "platformOrange"
 #define GREEN_PLATFORM_NAME "platformGreen"
+#define PURPLE_PLATFORM_NAME "platformPurple"
 
 // PLAYER Y AXE MOVEMENT TYPE
 #define PLAYER_ON_THE_GROUND 0
@@ -36,7 +37,7 @@
 
 
 // GAME PARAMETERS 
-#define PLAYER_X_MOVE_STEP 0.05f
+#define PLAYER_X_MOVE_STEP 0.1f
 #define CAMERA_X_THIRD 0
 #define CAMERA_Y_THIRD 2
 #define CAMERA_Z_THIRD 4
@@ -45,8 +46,9 @@
 #define CAMERA_Z_FIRST -1
 
 
-#define PLAYER_DEFAULT_SPEED 0.1f
+#define PLAYER_MAX_SPEED 1.0f
+#define PLAYER_DEFAULT_SPEED 0.01f
+#define PLAYER_SPEED_STEP 0.003f
 #define PLAYER_MAX_HEIGHT 2.5f
 #define PLAYER_JUMP_STEP 0.1f
 
-#define PLATFORM_Z_STEP 0.01f

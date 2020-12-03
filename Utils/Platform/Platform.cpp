@@ -29,9 +29,10 @@ int Platform::updatePlatform(Platform lastPlatform, Player player)
 		lenght = rand() % (PLATFORM_MAX_LENGTH - PLATFORM_LENGTH + 1) + PLATFORM_LENGTH;
 		pos.z = (-1) * ((-1) * lastPlatform.pos.z + (lastPlatform.lenght / 2) + GAP_BETWEEN_PLATFORMS_SIZE + (lenght / 2));
 		type = rand() % 4;
+		isTouched = false;
 
-		cout << "col " << column << " last platform was " << lastPlatform.id << " [zCenter=" << lastPlatform.pos.z << " , lenght= " << lastPlatform.lenght << "]"
-			<< "  ----> new last is " << id << " [zCenter=" << pos.z << " , lenght= " << lenght << "]" << endl;
+		//cout << "col " << column << " last platform was " << lastPlatform.id << " [zCenter=" << lastPlatform.pos.z << " , lenght= " << lastPlatform.lenght << "]"
+		//	<< "  ----> new last is " << id << " [zCenter=" << pos.z << " , lenght= " << lenght << "]" << endl;
 
 
 		return id;
@@ -45,3 +46,17 @@ int Platform::updatePlatform(Platform lastPlatform, Player player)
 	pos.z += player.speed;
 	return lastPlatform.id;
 }
+
+void Platform::checkForCollision(Player &player)
+{
+	if (player.y_axe_movement_type == PLAYER_ON_THE_GROUND &&
+		(player.pos.z <= (pos.z + (lenght / 2)) && player.pos.z >= (pos.z - (lenght / 2))) &&
+		(player.pos.x <= (pos.x + (PLATFORM_WIDTH / 2)) && player.pos.x >= (pos.x - (PLATFORM_WIDTH / 2)))) {
+		isTouched = true;
+		player.touchingPlatformID = id;
+		// TODO apply logic
+	}
+}
+
+
+

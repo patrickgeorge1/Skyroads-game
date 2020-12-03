@@ -18,6 +18,7 @@ public:
 
 	Position3D pos = Position3D();
 	bool isOutOfScreen = true;
+	bool isTouched = false;
 	int type = GREEN_PLATFORM;
 	int column = 0;
 	int lenght = PLATFORM_LENGTH;
@@ -25,6 +26,7 @@ public:
 
 	void movePlatformToColumn();
 	int updatePlatform(Platform, Player);
+	void checkForCollision(Player &);
 };
 
 #endif

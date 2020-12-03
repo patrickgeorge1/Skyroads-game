@@ -148,6 +148,38 @@ void Tema2::createGreenPlatformMesh()
 	}
 }
 
+
+
+void Tema2::createPurplePlatformMesh()
+{
+	// Create a simple cube
+	{
+		vector<VertexFormat> vertices
+		{
+			VertexFormat(glm::vec3(-1, -1,  1), glm::vec3(1, 0, 0.5f), glm::vec3(0.2, 0.8, 0.2)),
+			VertexFormat(glm::vec3(1, -1,  1), glm::vec3(1, 0, 0.5f), glm::vec3(0.9, 0.4, 0.2)),
+			VertexFormat(glm::vec3(-1,  1,  1), glm::vec3(1, 0, 0.5f), glm::vec3(0.7, 0.7, 0.1)),
+			VertexFormat(glm::vec3(1,  1,  1), glm::vec3(1, 0, 0.5f), glm::vec3(0.7, 0.3, 0.7)),
+			VertexFormat(glm::vec3(-1, -1, -1), glm::vec3(1, 0, 0.5f), glm::vec3(0.3, 0.5, 0.4)),
+			VertexFormat(glm::vec3(1, -1, -1), glm::vec3(1, 0, 0.5f), glm::vec3(0.5, 0.2, 0.9)),
+			VertexFormat(glm::vec3(-1,  1, -1), glm::vec3(1, 0, 0.5f), glm::vec3(0.7, 0.0, 0.7)),
+			VertexFormat(glm::vec3(1,  1, -1), glm::vec3(1, 0, 0.5f), glm::vec3(0.1, 0.5, 0.8)),
+		};
+
+		vector<unsigned short> indices =
+		{
+			0, 1, 2,		1, 3, 2,
+			2, 3, 7,		2, 7, 6,
+			1, 7, 3,		1, 5, 7,
+			6, 7, 4,		7, 5, 4,
+			0, 4, 1,		1, 4, 5,
+			2, 6, 4,		0, 2, 4,
+		};
+
+		CreateMesh(PURPLE_PLATFORM_NAME, vertices, indices);
+	}
+}
+
 void Tema2::Init()
 {
 	// set camera and world
@@ -168,6 +200,7 @@ void Tema2::Init()
 	createYellowPlatformMesh();
 	createOrangePlatformMesh();
 	createGreenPlatformMesh();
+	createPurplePlatformMesh();
 
 
 	// Create a shader program for drawing face polygon with the color of the normal
@@ -185,8 +218,6 @@ void Tema2::Init()
 	
 	// render platforms
 	{
-
-		
 		int lastColumnPos[MAX_PLATFORM_COLUMNS] = {0};
 		int half = MAX_PLATFORM_COLUMNS / 2;
 		int offset = half * (PLATFORM_WIDTH + GAP_BETWEEN_PLATFORMS_SIZE);
@@ -201,6 +232,7 @@ void Tema2::Init()
 			platforms[i].pos.y = (-1) * (PLATFORM_HEIGHT);
 			platforms[i].pos.x = offset -  (platforms[i].column * (PLATFORM_WIDTH + GAP_BETWEEN_PLATFORMS_SIZE));
 			platforms[i].isOutOfScreen = false;
+			platforms[i].isTouched = false;
 			platforms[i].type = rand() % 4;
 
 			 
@@ -231,27 +263,53 @@ void Tema2::Update(float deltaTimeSeconds)
 		if (!cameraIsThirdPerson) setCameraFirstPerson();
 	}
 
+	{
+		// MUST CHECK FOR PLAYER COMMANDS FIRST
+		// check for jumping
+		player.ajustPlayerHeight();
+	}
+
 
 	// RENDER PLATFORMS
 	{
 		for (int i = 0; i < MAX_PLATFORM_NUMBER; i++) {
-			//platforms[i].pos.z += PLATFORM_Z_STEP;
+			// move and generate platform
 			int column = platforms[i].column;
 			Platform lastPlatform = platforms[lastPlatformOnColumn[column]];
 			int lastPlatformId = platforms[i].updatePlatform(lastPlatform, player);
 			lastPlatformOnColumn[column] = lastPlatformId;
 
+			// check for collision and apply effects
+			platforms[i].checkForCollision(player);
+
+			// draw them
 			glm::mat4 modelMatrix = glm::mat4(1);
 			modelMatrix = glm::translate(modelMatrix, glm::vec3(platforms[i].pos.x, platforms[i].pos.y, platforms[i].pos.z));
 			modelMatrix = glm::scale(modelMatrix, glm::vec3(PLATFORM_WIDTH / 2, PLATFORM_HEIGHT, platforms[i].lenght / 2));
-			RenderSimpleMesh(meshes[platform_mesh_name[platforms[i].type]], shaders["PatrickShader"], modelMatrix);
+			if (platforms[i].isTouched) RenderSimpleMesh(meshes[PURPLE_PLATFORM_NAME], shaders["PatrickShader"], modelMatrix);
+			else RenderSimpleMesh(meshes[platform_mesh_name[platforms[i].type]], shaders["PatrickShader"], modelMatrix);
 		}
 	}
 	
 	// RENDER PLAYER
 	{
-		// check for jumping
-		player.ajustPlayerHeight(); 
+		// check to see if player fell
+		int platformLength = -1;
+		Position3D platPos = Position3D();
+		if (player.touchingPlatformID != -1) {
+			platformLength = platforms[player.touchingPlatformID].lenght;
+			platPos = platforms[player.touchingPlatformID].pos;
+		}
+		bool hasFallen = player.checkForFalling(platformLength, platPos);
+		if (hasFallen) {
+			glClearColor(0.5f, 0, 0, 1);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			// TODO END GAME EXIT()
+		}
+
+
+
+
 
 		glm::mat4 modelMatrix = glm::mat4(1);
 		modelMatrix = glm::translate(modelMatrix, glm::vec3(player.pos.x, player.pos.y, player.pos.z));
@@ -396,6 +454,16 @@ void Tema2::OnInputUpdate(float deltaTime, int mods)
 	if (window->KeyHold(GLFW_KEY_D))
 	{
 		player.pos.x = glm::min(PLAYER_MAX_RIGHT, player.pos.x + PLAYER_X_MOVE_STEP);
+	}
+
+	if (window->KeyHold(GLFW_KEY_W))
+	{
+		player.increaseSpeed();
+	}
+
+	if (window->KeyHold(GLFW_KEY_S))
+	{
+		player.decreaseSpeed();
 	}
 }
 
