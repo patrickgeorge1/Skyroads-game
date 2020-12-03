@@ -2,8 +2,9 @@
 #define SPHERE_RADIUS 0.5f
 #define GAP_BETWEEN_PLATFORMS_SIZE 1
 #define PLATFORM_WIDTH 2
-#define PLATFORM_LENGTH 4.0f
-#define PLATFORM_HEIGHT 0.1f
+#define PLATFORM_MAX_LENGTH 10
+#define PLATFORM_LENGTH 3
+#define PLATFORM_HEIGHT 0.05f
 #define	init_window_width 2300
 #define	init_window_height 1000
 
@@ -44,8 +45,8 @@
 #define CAMERA_Z_FIRST -1
 
 
-#define PLAYER_DEFAULT_SPEED 0.3f
+#define PLAYER_DEFAULT_SPEED 0.1f
 #define PLAYER_MAX_HEIGHT 2.5f
 #define PLAYER_JUMP_STEP 0.1f
 
-#define PLATFORM_Z_STEP 0.1f
+#define PLATFORM_Z_STEP 0.01f

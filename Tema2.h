@@ -47,4 +47,5 @@ protected:
 	bool cameraIsThirdPerson = true;
 	Player player = Player();
 	Platform platforms[MAX_PLATFORM_NUMBER];
+	int lastPlatformOnColumn[MAX_PLATFORM_COLUMNS] = { 0 };
 };

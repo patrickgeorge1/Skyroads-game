@@ -192,15 +192,23 @@ void Tema2::Init()
 		int offset = half * (PLATFORM_WIDTH + GAP_BETWEEN_PLATFORMS_SIZE);
 
 		for (int i = 0; i < MAX_PLATFORM_NUMBER; i++) {
+			platforms[i].id = i;
 			platforms[i].column = i % MAX_PLATFORM_COLUMNS;
-			platforms[i].pos.z = (-1) * (lastColumnPos[platforms[i].column]);
+			platforms[i].lenght = rand() % (PLATFORM_MAX_LENGTH - PLATFORM_LENGTH + 1) + PLATFORM_LENGTH;
+
+
+			platforms[i].pos.z = (-1) * (lastColumnPos[platforms[i].column] + platforms[i].lenght / 2);
 			platforms[i].pos.y = (-1) * (PLATFORM_HEIGHT);
 			platforms[i].pos.x = offset -  (platforms[i].column * (PLATFORM_WIDTH + GAP_BETWEEN_PLATFORMS_SIZE));
 			platforms[i].isOutOfScreen = false;
 			platforms[i].type = rand() % 4;
-			lastColumnPos[platforms[i].column] += PLATFORM_LENGTH + GAP_BETWEEN_PLATFORMS_SIZE;
-			//cout << platforms[i].column << " - (" << platforms[i].pos.x << "," << platforms[i].pos.y << "," << platforms[i].pos.z << ")" << endl;
+
+			 
+			lastColumnPos[platforms[i].column] += platforms[i].lenght + GAP_BETWEEN_PLATFORMS_SIZE;   // update the next available z
+			lastPlatformOnColumn[platforms[i].column] = i;   // set it as the last platform in this column
 		}
+
+		cout << lastPlatformOnColumn[0] << " " << lastPlatformOnColumn[1] << " " << lastPlatformOnColumn[2] << endl;
 	}
 }
 
@@ -227,12 +235,15 @@ void Tema2::Update(float deltaTimeSeconds)
 	// RENDER PLATFORMS
 	{
 		for (int i = 0; i < MAX_PLATFORM_NUMBER; i++) {
-			platforms[i].pos.z += PLATFORM_Z_STEP;
-
+			//platforms[i].pos.z += PLATFORM_Z_STEP;
+			int column = platforms[i].column;
+			Platform lastPlatform = platforms[lastPlatformOnColumn[column]];
+			int lastPlatformId = platforms[i].updatePlatform(lastPlatform, player);
+			lastPlatformOnColumn[column] = lastPlatformId;
 
 			glm::mat4 modelMatrix = glm::mat4(1);
 			modelMatrix = glm::translate(modelMatrix, glm::vec3(platforms[i].pos.x, platforms[i].pos.y, platforms[i].pos.z));
-			modelMatrix = glm::scale(modelMatrix, glm::vec3(PLATFORM_WIDTH / 2, PLATFORM_HEIGHT, PLATFORM_LENGTH / 2));
+			modelMatrix = glm::scale(modelMatrix, glm::vec3(PLATFORM_WIDTH / 2, PLATFORM_HEIGHT, platforms[i].lenght / 2));
 			RenderSimpleMesh(meshes[platform_mesh_name[platforms[i].type]], shaders["PatrickShader"], modelMatrix);
 		}
 	}
@@ -398,7 +409,7 @@ void Tema2::OnKeyPress(int key, int mods)
 		cout << (cameraIsThirdPerson ? "third" : "first") << endl;
 	}
 
-	if (key == GLFW_KEY_W && player.y_axe_movement_type == PLAYER_ON_THE_GROUND) {
+	if (key == GLFW_KEY_SPACE && player.y_axe_movement_type == PLAYER_ON_THE_GROUND) {
 		player.y_axe_movement_type = PLAYER_IS_TAKING_OFF;
 	}
 }
