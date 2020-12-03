@@ -43,18 +43,36 @@ int Platform::updatePlatform(Platform lastPlatform, Player player)
 		return lastPlatform.id;
 	}
 
-	pos.z += player.speed;
+	pos.z += player.speed + player.penalty_speed;
 	return lastPlatform.id;
 }
 
-void Platform::checkForCollision(Player &player)
+void Platform::checkForCollision(Player& player)
 {
 	if (player.y_axe_movement_type == PLAYER_ON_THE_GROUND &&
 		(player.pos.z <= (pos.z + (lenght / 2)) && player.pos.z >= (pos.z - (lenght / 2))) &&
 		(player.pos.x <= (pos.x + (PLATFORM_WIDTH / 2)) && player.pos.x >= (pos.x - (PLATFORM_WIDTH / 2)))) {
-		isTouched = true;
 		player.touchingPlatformID = id;
-		// TODO apply logic
+		
+		if (!isTouched) {
+			switch (type)
+			{
+				case ORANGE_PLATFORM:
+					player.startPenalty();
+					break;
+				case YELLOW_PLATFORM:
+					player.deductFuelPenalty();
+					break;
+				case GREEN_PLATFORM:
+					player.receiveFuelBonus();
+					break;
+				case RED_PLATFORM:
+					player.gameOver = true;
+					break;
+			}
+		}
+
+		isTouched = true;
 	}
 }
 

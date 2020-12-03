@@ -12,7 +12,7 @@
 
 using namespace std;
 
-const char *platform_mesh_name[4] = { RED_PLATFORM_NAME,  YELLOW_PLATFORM_NAME, ORANGE_PLATFORM_NAME, GREEN_PLATFORM_NAME};
+const char *platform_mesh_name[4] = { GREEN_PLATFORM_NAME,  YELLOW_PLATFORM_NAME, ORANGE_PLATFORM_NAME, RED_PLATFORM_NAME };
 
 Tema2::Tema2()
 {
@@ -30,7 +30,6 @@ void Tema2::createPlayerMesh()
 		meshes[mesh->GetMeshID()] = mesh;
 	}
 }
-
 void Tema2::createRedPlatformMesh()
 {
 	// Create a simple cube
@@ -147,9 +146,6 @@ void Tema2::createGreenPlatformMesh()
 		CreateMesh(GREEN_PLATFORM_NAME, vertices, indices);
 	}
 }
-
-
-
 void Tema2::createPurplePlatformMesh()
 {
 	// Create a simple cube
@@ -265,7 +261,7 @@ void Tema2::Update(float deltaTimeSeconds)
 
 	{
 		// MUST CHECK FOR PLAYER COMMANDS FIRST
-		// check for jumping
+		// check for jumping, and speed penalty
 		player.ajustPlayerHeight();
 	}
 
@@ -309,11 +305,12 @@ void Tema2::Update(float deltaTimeSeconds)
 
 
 
-
-
-		glm::mat4 modelMatrix = glm::mat4(1);
-		modelMatrix = glm::translate(modelMatrix, glm::vec3(player.pos.x, player.pos.y, player.pos.z));
-		RenderSimpleMesh(meshes["player"], shaders["PatrickShader"], modelMatrix);
+		if (cameraIsThirdPerson)
+		{
+			glm::mat4 modelMatrix = glm::mat4(1);
+			modelMatrix = glm::translate(modelMatrix, glm::vec3(player.pos.x, player.pos.y, player.pos.z));
+			RenderSimpleMesh(meshes["player"], shaders["PatrickShader"], modelMatrix);
+		}
 	}
 
 	//// RENDER PLATFORM
@@ -396,8 +393,6 @@ Mesh* Tema2::CreateMesh(const char* name, const std::vector<VertexFormat>& verti
 	return meshes[name];
 }
 
-
-
 void Tema2::RenderSimpleMesh(Mesh* mesh, Shader* shader, const glm::mat4& modelMatrix)
 {
 	if (!mesh || !shader || !shader->GetProgramID())
@@ -437,12 +432,10 @@ void Tema2::RenderSimpleMesh(Mesh* mesh, Shader* shader, const glm::mat4& modelM
 	glDrawElements(mesh->GetDrawMode(), static_cast<int>(mesh->indices.size()), GL_UNSIGNED_SHORT, 0);
 }
 
-
 void Tema2::FrameEnd()
 {
 	DrawTemaCoordinat();
 }
-
 
 void Tema2::OnInputUpdate(float deltaTime, int mods)
 {

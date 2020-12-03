@@ -24,6 +24,7 @@ void Player::decreaseSpeed()
 
 void Player::ajustPlayerHeight()
 {
+	if (penaltyIsOver()) endPenalty();
 
 	switch (y_axe_movement_type)
 	{
@@ -45,7 +46,7 @@ bool Player::checkForFalling(int lenght, Position3D platPos)
 {
 	// not touching anything, but on the ground == > stay in a gap
 	if (touchingPlatformID == -1 && y_axe_movement_type == PLAYER_ON_THE_GROUND) {
-		cout << "here landing" << endl;
+		gameOver = true;
 		return true;
 	}
 
@@ -57,10 +58,55 @@ bool Player::checkForFalling(int lenght, Position3D platPos)
 		if ((pos.z <= (platPos.z + (lenght / 2)) && pos.z >= (platPos.z - (lenght / 2))) &&
 			(pos.x <= (platPos.x + (PLATFORM_WIDTH / 2)) && pos.x >= (platPos.x - (PLATFORM_WIDTH / 2)))) return false;
 		else {
-			cout << "here leaving" << endl;
+			gameOver = true;
 			return true;
 		}
 	}
 
+	return false;
+}
+
+void Player::startPenalty()
+{
+	penalty_begin = clock();
+	penalty_speed = PLAYER_PENALTY_SPEED;
+}
+
+bool Player::penaltyIsOver()
+{
+	penalty_end = clock();
+	return (difftime(penalty_end, penalty_begin) >= PLAYER_PENALTY_DURATION);
+}
+
+void Player::endPenalty()
+{
+	penalty_speed = 0;
+}
+
+void Player::deductFuelPenalty()
+{
+	fuel -= PLAYER_FUEL_PENALTY;
+	if (fuel < 0) {
+		fuel = 0;
+		gameOver = true;
+	}
+
+}
+
+void Player::receiveFuelBonus()
+{
+	fuel += PLAYER_FUEL_BONUS;
+	if (fuel > PLAYER_MAX_FUEL) fuel = PLAYER_MAX_FUEL;
+}
+
+void Player::startLastRedCount()
+{
+	last_red_begin = clock();
+}
+
+bool Player::LastRedCountIsOver()
+{
+	last_red_end = clock();
+	if (difftime(last_red_end, last_red_begin) >= INTERVAL_BETWEEN_RED_PLATFORMS) return true;
 	return false;
 }
