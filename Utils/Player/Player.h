@@ -40,6 +40,9 @@ public:
 
 	void startLastRedCount();
 	bool LastRedCountIsOver();
+
+	void startGameOverAnimation();
+	bool gameOverAnimationFinished();
 };
 
 #endif

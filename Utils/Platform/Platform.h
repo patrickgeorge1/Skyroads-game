@@ -25,7 +25,7 @@ public:
 	int id = -1;
 
 	void movePlatformToColumn();
-	int updatePlatform(Platform, Player);
+	int updatePlatform(Platform, Player&);
 	void checkForCollision(Player &);
 };
 

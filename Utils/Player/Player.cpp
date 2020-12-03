@@ -1,6 +1,8 @@
 #include "Player.h"
 #define MAX(x, y) (((x) > (y)) ? (x) : (y))
 #define MIN(x, y) (((x) < (y)) ? (x) : (y))
+#define ABS(x)  (x<0)?-x:x
+#define SGN(x)  (x<0)?-1:1
 
 Player::Player()
 {
@@ -39,6 +41,12 @@ void Player::ajustPlayerHeight()
 			break;
 		default:
 			break;
+	}
+
+	fuel -= PLAYER_FUEL_LOSS_STEP;
+	if (fuel < 0) {
+		fuel = 0;
+		gameOver = true;
 	}
 }
 
@@ -109,4 +117,15 @@ bool Player::LastRedCountIsOver()
 	last_red_end = clock();
 	if (difftime(last_red_end, last_red_begin) >= INTERVAL_BETWEEN_RED_PLATFORMS) return true;
 	return false;
+}
+
+void Player::startGameOverAnimation()
+{
+	pos.y -= GAME_OVER_FALLING_STEP;
+	pos.x = cos(pos.y * 2);
+}
+
+bool Player::gameOverAnimationFinished()
+{
+	return pos.y < GAME_OVER_DEPTH;
 }

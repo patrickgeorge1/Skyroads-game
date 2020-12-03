@@ -197,6 +197,12 @@ void Tema2::Init()
 	createOrangePlatformMesh();
 	createGreenPlatformMesh();
 	createPurplePlatformMesh();
+	// FUEL level
+	{
+		glm::vec3 center = glm::vec3(0, 0, 0);
+		Mesh* fuelBar = Object2D::CreateRectangle("fuelBar", center, 1, 1, glm::vec3(0.1f, 1, 0.1f), true);
+		AddMeshToList(fuelBar);
+	}
 
 
 	// Create a shader program for drawing face polygon with the color of the normal
@@ -231,12 +237,19 @@ void Tema2::Init()
 			platforms[i].isTouched = false;
 			platforms[i].type = rand() % 4;
 
+			// don t want to create red platform too often
+			if (platforms[i].type == RED_PLATFORM) {
+				if (!player.LastRedCountIsOver()) {
+					platforms[i].type = rand() % 3;
+				}
+				else {
+					player.startLastRedCount();
+				}
+			}
 			 
 			lastColumnPos[platforms[i].column] += platforms[i].lenght + GAP_BETWEEN_PLATFORMS_SIZE;   // update the next available z
 			lastPlatformOnColumn[platforms[i].column] = i;   // set it as the last platform in this column
 		}
-
-		cout << lastPlatformOnColumn[0] << " " << lastPlatformOnColumn[1] << " " << lastPlatformOnColumn[2] << endl;
 	}
 }
 
@@ -254,6 +267,15 @@ void Tema2::FrameStart()
 
 void Tema2::Update(float deltaTimeSeconds)
 {
+	// FUEL level
+	{
+		modelMatrix = glm::mat3(1);
+		modelMatrix *= Transform2D::Translate(-3.5f, 2.9f);
+		modelMatrix *= Transform2D::Scale(player.fuel / 10, 0.1f);
+		RenderMesh2D(meshes["fuelBar"], shaders["VertexColor"], modelMatrix);
+	}
+
+
 	// MOVE FIRST PERSON CAMERA
 	{
 		if (!cameraIsThirdPerson) setCameraFirstPerson();
@@ -297,10 +319,14 @@ void Tema2::Update(float deltaTimeSeconds)
 			platPos = platforms[player.touchingPlatformID].pos;
 		}
 		bool hasFallen = player.checkForFalling(platformLength, platPos);
-		if (hasFallen) {
+		if (player.gameOver) {
 			glClearColor(0.5f, 0, 0, 1);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			// TODO END GAME EXIT()
+			player.startGameOverAnimation();
+			if (player.gameOverAnimationFinished()) {
+				cout << "GAME OVER !" << endl;
+				exit(0);
+			}
 		}
 
 
@@ -439,22 +465,22 @@ void Tema2::FrameEnd()
 
 void Tema2::OnInputUpdate(float deltaTime, int mods)
 {
-	if (window->KeyHold(GLFW_KEY_A))
+	if (window->KeyHold(GLFW_KEY_A) && !player.gameOver)
 	{
 		player.pos.x = glm::max(PLAYER_MAX_LEFT, player.pos.x - PLAYER_X_MOVE_STEP);
 	}
 
-	if (window->KeyHold(GLFW_KEY_D))
+	if (window->KeyHold(GLFW_KEY_D) && !player.gameOver)
 	{
 		player.pos.x = glm::min(PLAYER_MAX_RIGHT, player.pos.x + PLAYER_X_MOVE_STEP);
 	}
 
-	if (window->KeyHold(GLFW_KEY_W))
+	if (window->KeyHold(GLFW_KEY_W) && !player.gameOver)
 	{
 		player.increaseSpeed();
 	}
 
-	if (window->KeyHold(GLFW_KEY_S))
+	if (window->KeyHold(GLFW_KEY_S) && !player.gameOver)
 	{
 		player.decreaseSpeed();
 	}
@@ -462,7 +488,7 @@ void Tema2::OnInputUpdate(float deltaTime, int mods)
 
 void Tema2::OnKeyPress(int key, int mods)
 {
-	if (key == GLFW_KEY_C)
+	if (key == GLFW_KEY_C && !player.gameOver)
 	{
 		cameraIsThirdPerson = cameraIsThirdPerson ^ true ^ false;
 		if (cameraIsThirdPerson) setCameraThirdPerson();
@@ -470,7 +496,7 @@ void Tema2::OnKeyPress(int key, int mods)
 		cout << (cameraIsThirdPerson ? "third" : "first") << endl;
 	}
 
-	if (key == GLFW_KEY_SPACE && player.y_axe_movement_type == PLAYER_ON_THE_GROUND) {
+	if (key == GLFW_KEY_SPACE && player.y_axe_movement_type == PLAYER_ON_THE_GROUND && !player.gameOver) {
 		player.y_axe_movement_type = PLAYER_IS_TAKING_OFF;
 	}
 }

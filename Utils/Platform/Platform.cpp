@@ -21,7 +21,7 @@ void Platform::movePlatformToColumn()
 	pos.x = (-1) * column * PLATFORM_WIDTH + (PLATFORM_WIDTH / 2);
 }
 
-int Platform::updatePlatform(Platform lastPlatform, Player player)
+int Platform::updatePlatform(Platform lastPlatform, Player &player)
 {
 	// add
 	if (isOutOfScreen) {
@@ -29,6 +29,15 @@ int Platform::updatePlatform(Platform lastPlatform, Player player)
 		lenght = rand() % (PLATFORM_MAX_LENGTH - PLATFORM_LENGTH + 1) + PLATFORM_LENGTH;
 		pos.z = (-1) * ((-1) * lastPlatform.pos.z + (lastPlatform.lenght / 2) + GAP_BETWEEN_PLATFORMS_SIZE + (lenght / 2));
 		type = rand() % 4;
+		// don t want to create red platform too often
+		if (type == RED_PLATFORM) {
+			if (!player.LastRedCountIsOver()) {
+				type = rand() % 3;
+			}
+			else {
+				player.startLastRedCount();
+			}
+		}
 		isTouched = false;
 
 		//cout << "col " << column << " last platform was " << lastPlatform.id << " [zCenter=" << lastPlatform.pos.z << " , lenght= " << lastPlatform.lenght << "]"
