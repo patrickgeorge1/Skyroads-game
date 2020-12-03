@@ -227,6 +227,9 @@ void Tema2::Update(float deltaTimeSeconds)
 	// RENDER PLATFORMS
 	{
 		for (int i = 0; i < MAX_PLATFORM_NUMBER; i++) {
+			platforms[i].pos.z += PLATFORM_Z_STEP;
+
+
 			glm::mat4 modelMatrix = glm::mat4(1);
 			modelMatrix = glm::translate(modelMatrix, glm::vec3(platforms[i].pos.x, platforms[i].pos.y, platforms[i].pos.z));
 			modelMatrix = glm::scale(modelMatrix, glm::vec3(PLATFORM_WIDTH / 2, PLATFORM_HEIGHT, PLATFORM_LENGTH / 2));
@@ -236,8 +239,11 @@ void Tema2::Update(float deltaTimeSeconds)
 	
 	// RENDER PLAYER
 	{
+		// check for jumping
+		player.ajustPlayerHeight(); 
+
 		glm::mat4 modelMatrix = glm::mat4(1);
-		modelMatrix = glm::translate(modelMatrix, glm::vec3(pos.x, pos.y, pos.z));
+		modelMatrix = glm::translate(modelMatrix, glm::vec3(player.pos.x, player.pos.y, player.pos.z));
 		RenderSimpleMesh(meshes["player"], shaders["PatrickShader"], modelMatrix);
 	}
 
@@ -253,7 +259,7 @@ void Tema2::Update(float deltaTimeSeconds)
 void Tema2::setCameraFirstPerson()
 {
 	auto camera = GetSceneCamera();
-	camera->SetPosition(glm::vec3(CAMERA_X_FIRST + pos.x, CAMERA_Y_FIRST, CAMERA_Z_FIRST));
+	camera->SetPosition(glm::vec3(CAMERA_X_FIRST + player.pos.x, CAMERA_Y_FIRST + player.pos.y, CAMERA_Z_FIRST));
 	camera->Update();
 }
 void Tema2::setCameraThirdPerson()
@@ -373,12 +379,12 @@ void Tema2::OnInputUpdate(float deltaTime, int mods)
 {
 	if (window->KeyHold(GLFW_KEY_A))
 	{
-		pos.x = glm::max(PLAYER_MAX_LEFT, pos.x - PLAYER_X_MOVE_STEP);
+		player.pos.x = glm::max(PLAYER_MAX_LEFT, player.pos.x - PLAYER_X_MOVE_STEP);
 	}
 
 	if (window->KeyHold(GLFW_KEY_D))
 	{
-		pos.x = glm::min(PLAYER_MAX_RIGHT, pos.x + PLAYER_X_MOVE_STEP);
+		player.pos.x = glm::min(PLAYER_MAX_RIGHT, player.pos.x + PLAYER_X_MOVE_STEP);
 	}
 }
 
@@ -390,6 +396,10 @@ void Tema2::OnKeyPress(int key, int mods)
 		if (cameraIsThirdPerson) setCameraThirdPerson();
 		else setCameraFirstPerson();
 		cout << (cameraIsThirdPerson ? "third" : "first") << endl;
+	}
+
+	if (key == GLFW_KEY_W && player.y_axe_movement_type == PLAYER_ON_THE_GROUND) {
+		player.y_axe_movement_type = PLAYER_IS_TAKING_OFF;
 	}
 }
 

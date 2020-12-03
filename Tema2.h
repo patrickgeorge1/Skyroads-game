@@ -6,6 +6,7 @@
 
 #include "../Tema2/Utils/Position/Position3D.h"
 #include "Utils/Platform/Platform.h"
+#include "Utils/Player/Player.h"
 #include "Defines.h"
 
 class Tema2 : public SimpleScene {
@@ -41,8 +42,9 @@ private:
 
 protected:
 	glm::mat3 modelMatrix;
-	Position3D pos = Position3D(0, SPHERE_DEFAULT_HEIGHT, 0);
-	bool cameraIsThirdPerson = true;
+	//Position3D pos = Position3D(0, SPHERE_DEFAULT_HEIGHT, 0);
 
+	bool cameraIsThirdPerson = true;
+	Player player = Player();
 	Platform platforms[MAX_PLATFORM_NUMBER];
 };

@@ -19,3 +19,22 @@ void Platform::movePlatformToColumn()
 {
 	pos.x = (-1) * column * PLATFORM_WIDTH + (PLATFORM_WIDTH / 2);
 }
+
+Platform Platform::updatePlatform(Platform lastPlatform)
+{
+
+	if (isOutOfScreen) {
+		//TODO
+	}
+
+	if (pos.z > 1) {
+		isOutOfScreen = true;
+		return lastPlatform;
+	}
+
+
+	pos.z += PLATFORM_Z_STEP;
+
+
+	return lastPlatform;
+}

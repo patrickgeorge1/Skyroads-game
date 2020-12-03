@@ -14,8 +14,10 @@ public:
 	bool isOutOfScreen = true;
 	int type = GREEN_PLATFORM;
 	int column = 0;
+	float lenght = PLATFORM_LENGTH;
 
 	void movePlatformToColumn();
+	Platform updatePlatform(Platform);
 };
 
 #endif
