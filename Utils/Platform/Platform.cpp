@@ -28,11 +28,11 @@ int Platform::updatePlatform(Platform lastPlatform, Player &player)
 		isOutOfScreen = false;
 		lenght = rand() % (PLATFORM_MAX_LENGTH - PLATFORM_LENGTH + 1) + PLATFORM_LENGTH;
 		pos.z = (-1) * ((-1) * lastPlatform.pos.z + (lastPlatform.lenght / 2) + GAP_BETWEEN_PLATFORMS_SIZE + (lenght / 2));
-		type = rand() % 4;
+		type = rand() % 5;
 		// don t want to create red platform too often
 		if (type == RED_PLATFORM) {
 			if (!player.LastRedCountIsOver()) {
-				type = rand() % 3;
+				type = rand() % 4;
 			}
 			else {
 				player.startLastRedCount();
@@ -78,6 +78,8 @@ void Platform::checkForCollision(Player& player)
 					break;
 				case RED_PLATFORM:
 					player.gameOver = true;
+					break;
+				case BLUE_PLATFORM:
 					break;
 			}
 		}

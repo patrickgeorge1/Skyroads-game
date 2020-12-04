@@ -11,8 +11,8 @@
 
 // POSITIONS
 #define SPHERE_DEFAULT_HEIGHT SPHERE_RADIUS
-#define PLAYER_MAX_LEFT -4.f
-#define PLAYER_MAX_RIGHT 4.f
+#define PLAYER_MAX_LEFT  -100.f  // -4.f
+#define PLAYER_MAX_RIGHT 100.f        //  4.f
 
 #define FUEL_BAR_X -0.985f
 #define FUEL_BAR_Y 0.95f
@@ -28,10 +28,13 @@
 
 
 // PLATFORM TYPES
-#define GREEN_PLATFORM 0
-#define YELLOW_PLATFORM 1
-#define ORANGE_PLATFORM 2
-#define RED_PLATFORM 3
+
+#define BLUE_PLATFORM 0
+#define GREEN_PLATFORM 1
+#define YELLOW_PLATFORM 2
+#define ORANGE_PLATFORM 3
+#define RED_PLATFORM 4
+#define BLUE_PLATFORM_NAME "bluePlatform"
 #define RED_PLATFORM_NAME "platformRed"
 #define YELLOW_PLATFORM_NAME "platformYellow"
 #define ORANGE_PLATFORM_NAME "platformOrange"
@@ -55,7 +58,7 @@
 
 
 #define PLAYER_MAX_SPEED 1.0f
-#define PLAYER_DEFAULT_SPEED 0 /// TO DO 0.07f
+#define PLAYER_DEFAULT_SPEED 0.07f
 #define PLAYER_SPEED_STEP 0.003f
 #define PLAYER_MAX_HEIGHT 2.5f
 #define PLAYER_JUMP_STEP 0.1f

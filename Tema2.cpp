@@ -12,7 +12,7 @@
 
 using namespace std;
 
-const char *platform_mesh_name[4] = { GREEN_PLATFORM_NAME,  YELLOW_PLATFORM_NAME, ORANGE_PLATFORM_NAME, RED_PLATFORM_NAME };
+const char *platform_mesh_name[5] = { BLUE_PLATFORM_NAME, GREEN_PLATFORM_NAME,  YELLOW_PLATFORM_NAME, ORANGE_PLATFORM_NAME, RED_PLATFORM_NAME };
 
 Tema2::Tema2()
 {
@@ -175,6 +175,35 @@ void Tema2::createPurplePlatformMesh()
 		CreateMesh(PURPLE_PLATFORM_NAME, vertices, indices);
 	}
 }
+void Tema2::createBluePlatformMesh()
+{
+	// Create a simple cube
+	{
+		vector<VertexFormat> vertices
+		{
+			VertexFormat(glm::vec3(-1, -1,  1), glm::vec3(0, 0, 1), glm::vec3(0.2, 0.8, 0.2)),
+			VertexFormat(glm::vec3(1, -1,  1), glm::vec3(0, 0, 1), glm::vec3(0.9, 0.4, 0.2)),
+			VertexFormat(glm::vec3(-1,  1,  1), glm::vec3(0, 0, 1), glm::vec3(0.7, 0.7, 0.1)),
+			VertexFormat(glm::vec3(1,  1,  1), glm::vec3(0, 0, 1), glm::vec3(0.7, 0.3, 0.7)),
+			VertexFormat(glm::vec3(-1, -1, -1), glm::vec3(0, 0, 1), glm::vec3(0.3, 0.5, 0.4)),
+			VertexFormat(glm::vec3(1, -1, -1), glm::vec3(0, 0, 1), glm::vec3(0.5, 0.2, 0.9)),
+			VertexFormat(glm::vec3(-1,  1, -1), glm::vec3(0, 0, 1), glm::vec3(0.7, 0.0, 0.7)),
+			VertexFormat(glm::vec3(1,  1, -1), glm::vec3(0, 0, 1), glm::vec3(0.1, 0.5, 0.8)),
+		};
+
+		vector<unsigned short> indices =
+		{
+			0, 1, 2,		1, 3, 2,
+			2, 3, 7,		2, 7, 6,
+			1, 7, 3,		1, 5, 7,
+			6, 7, 4,		7, 5, 4,
+			0, 4, 1,		1, 4, 5,
+			2, 6, 4,		0, 2, 4,
+		};
+
+		CreateMesh(BLUE_PLATFORM_NAME, vertices, indices);
+	}
+}
 
 void Tema2::Init()
 {
@@ -196,6 +225,7 @@ void Tema2::Init()
 	createYellowPlatformMesh();
 	createOrangePlatformMesh();
 	createGreenPlatformMesh();
+	createBluePlatformMesh();
 	createPurplePlatformMesh();
 	// FUEL level
 	{
@@ -235,12 +265,12 @@ void Tema2::Init()
 			platforms[i].pos.x = offset -  (platforms[i].column * (PLATFORM_WIDTH + GAP_BETWEEN_PLATFORMS_SIZE));
 			platforms[i].isOutOfScreen = false;
 			platforms[i].isTouched = false;
-			platforms[i].type = rand() % 4;
+			platforms[i].type = rand() % 5;
 
 			// don t want to create red platform too often
 			if (platforms[i].type == RED_PLATFORM) {
 				if (!player.LastRedCountIsOver()) {
-					platforms[i].type = rand() % 3;
+					platforms[i].type = rand() % 4;
 				}
 				else {
 					player.startLastRedCount();
@@ -536,7 +566,7 @@ void Tema2::Render2DMesh(Mesh* mesh, Shader* shader, const glm::mat4& modelMatri
 
 void Tema2::FrameEnd()
 {
-	DrawTemaCoordinat();
+	//DrawTemaCoordinat();
 }
 
 void Tema2::OnInputUpdate(float deltaTime, int mods)
