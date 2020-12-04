@@ -7,11 +7,19 @@
 #define PLATFORM_HEIGHT 0.05f
 #define	init_window_width 2300
 #define	init_window_height 1000
+#define HALF_RECTANGLE_LENGTH 1
 
 // POSITIONS
 #define SPHERE_DEFAULT_HEIGHT SPHERE_RADIUS
 #define PLAYER_MAX_LEFT -4.f
 #define PLAYER_MAX_RIGHT 4.f
+
+#define FUEL_BAR_X -0.985f
+#define FUEL_BAR_Y 0.95f
+#define FUEL_BAR_Z -1
+#define FUEL_BAR_SCALE_X 70
+#define FUEL_BAR_SCALE_Y 7
+
 
 
 // INSTACE NUMBERS
@@ -47,7 +55,7 @@
 
 
 #define PLAYER_MAX_SPEED 1.0f
-#define PLAYER_DEFAULT_SPEED 0.07f
+#define PLAYER_DEFAULT_SPEED 0 /// TO DO 0.07f
 #define PLAYER_SPEED_STEP 0.003f
 #define PLAYER_MAX_HEIGHT 2.5f
 #define PLAYER_JUMP_STEP 0.1f

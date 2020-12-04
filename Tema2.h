@@ -22,6 +22,8 @@ private:
 	void FrameEnd() override;
 
 	void RenderSimpleMesh(Mesh* mesh, Shader* shader, const glm::mat4& modelMatrix);
+	void RenderDistortedMesh(Mesh* mesh, Shader* shader, const glm::mat4& modelMatrix);
+	void Render2DMesh(Mesh* mesh, Shader* shader, const glm::mat4& modelMatrix);
 	Mesh* CreateMesh(const char* name, const std::vector<VertexFormat>& vertices, const std::vector<unsigned short>& indices);
 	void createPlayerMesh();
 	void createGreenPlatformMesh();

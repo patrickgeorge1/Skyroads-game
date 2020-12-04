@@ -12,7 +12,6 @@ uniform mat4 View;
 uniform mat4 Projection;
 uniform float time;
 
-
 // TODO: output values to fragment shader
 out vec3 frag_position;
 out vec3 frag_normal;
@@ -28,7 +27,9 @@ void main()
 	frag_texture	= v_texture;
 	frag_color		= v_color;
 
+
 	// TODO: compute gl_Position
-	vec4 vec_final_position = Model * vec4(v_position, 1.f);
-	gl_Position	= Projection * View * vec_final_position;
+	 vec3 vec_new_position = v_position + v_normal * vec3(sin(time), sin(time), sin(time));
+	// vec3 vec_new_position = v_position;
+	gl_Position	= Projection * View * Model * vec4(vec_new_position, 1.f);
 }
