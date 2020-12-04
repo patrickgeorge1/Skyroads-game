@@ -129,3 +129,15 @@ bool Player::gameOverAnimationFinished()
 {
 	return pos.y < GAME_OVER_DEPTH;
 }
+
+void Player::startNoiseAnimation()
+{
+	noise_begin = clock();
+
+}
+
+bool Player::endNoiseAnimation()
+{
+	noise_end = clock();
+	return (difftime(noise_end, noise_begin) >= NOISE_ANIMATION_DURATION);
+}

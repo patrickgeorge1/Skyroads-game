@@ -27,6 +27,8 @@ public:
 	clock_t penalty_end;
 	clock_t last_red_begin;
 	clock_t last_red_end;
+	clock_t noise_begin;
+	clock_t noise_end;
 
 	void increaseSpeed();
 	void decreaseSpeed();
@@ -43,6 +45,10 @@ public:
 
 	void startGameOverAnimation();
 	bool gameOverAnimationFinished();
+
+	void startNoiseAnimation();
+	bool endNoiseAnimation();
+
 };
 
 #endif

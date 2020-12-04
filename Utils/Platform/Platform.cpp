@@ -73,6 +73,7 @@ void Platform::checkForCollision(Player& player)
 					player.deductFuelPenalty();
 					break;
 				case GREEN_PLATFORM:
+					player.startNoiseAnimation();
 					player.receiveFuelBonus();
 					break;
 				case RED_PLATFORM:

@@ -336,17 +336,10 @@ void Tema2::Update(float deltaTimeSeconds)
 		{
 			glm::mat4 modelMatrix = glm::mat4(1);
 			modelMatrix = glm::translate(modelMatrix, glm::vec3(player.pos.x, player.pos.y, player.pos.z));
-			RenderDistortedMesh(meshes["player"], shaders["PatrickShader"], modelMatrix);
+			if (player.endNoiseAnimation()) RenderSimpleMesh(meshes["player"], shaders["PatrickShader"], modelMatrix);
+			else RenderDistortedMesh(meshes["player"], shaders["PatrickShader"], modelMatrix);
 		}
 	}
-
-	//// RENDER PLATFORM
-	//{
-	//	glm::mat4 modelMatrix = glm::mat4(1);
-	//	modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 1, 0));
-	//	//modelMatrix = glm::scale(modelMatrix, glm::vec3(0.5f));
-	//	RenderSimpleMesh(meshes["platform"], shaders["PatrickShader"], modelMatrix);
-	//}
 }
 
 void Tema2::setCameraFirstPerson()
@@ -488,6 +481,7 @@ void Tema2::RenderDistortedMesh(Mesh* mesh, Shader* shader, const glm::mat4& mod
 	glUniformMatrix4fv(projLocation, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 
 	// get + set  time
+
 	GLint timeLocation = glGetUniformLocation(shader->GetProgramID(), "time");
 	glUniform1f(timeLocation, (GLfloat)Engine::GetElapsedTime());	// get + set  time
 

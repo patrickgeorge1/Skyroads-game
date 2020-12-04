@@ -5,6 +5,7 @@ in vec3 frag_position;
 in vec3 frag_normal;
 in vec2 frag_texture;
 in vec3 frag_color;
+in float frag_time;
 
 
 layout(location = 0) out vec4 out_color;
@@ -13,6 +14,9 @@ layout(location = 0) out vec4 out_color;
 void main()
 {
 	// TODO: write pixel out color
-	// out_color	= vec4(abs(frag_normal), 1.f);
-	out_color	= vec4(frag_color, 1.f);
+	if (frag_time != 0) {
+		out_color	= vec4(abs(frag_normal), 1.f);
+	} else {
+		out_color	= vec4(frag_color, 1.f) + vec4(1, 1, 0.3f, 1);
+	}
 }
