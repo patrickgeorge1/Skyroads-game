@@ -17,6 +17,6 @@ void main()
 	if (frag_time != 0) {
 		out_color	= vec4(abs(frag_normal), 1.f);
 	} else {
-		out_color	= vec4(frag_color, 1.f) + vec4(1, 1, 0.3f, 1);
+		out_color	= vec4(frag_color, 1.f);
 	}
 }

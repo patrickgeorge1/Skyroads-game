@@ -7,8 +7,11 @@
 
 #include <Core/Engine.h>
 #include "Transformations/Object2D.h"
+#include "Transformations/UtilDef.h"
+#include "Transformations/Transform3D.h"
 #include "Transformations/Transform2D.h"
 #include "Defines.h"
+
 
 using namespace std;
 
@@ -209,12 +212,8 @@ void Tema2::Init()
 {
 	// set camera and world
 	{
-		window->SetSize(init_window_width, init_window_height);
-		glm::ivec2 resolution = window->GetResolution();
-		auto camera = GetSceneCamera();
-		camera->SetPosition(glm::vec3(CAMERA_X_THIRD, CAMERA_Y_THIRD, CAMERA_Z_THIRD));
-		camera->Update();
-		GetCameraInput()->SetActive(false);
+		camera = new MyCamera();
+		camera->Set(glm::vec3(CAMERA_X_THIRD, CAMERA_Y_THIRD, CAMERA_Z_THIRD), glm::vec3(0, 1, 0), glm::vec3(0, 1, 0));
 	}
 
 
@@ -300,9 +299,9 @@ void Tema2::Update(float deltaTimeSeconds)
 	// FUEL level
 	{
 		glm::mat4 modelMatrix = glm::mat4(1);
-		modelMatrix = glm::translate(modelMatrix, glm::vec3(FUEL_BAR_X, FUEL_BAR_Y, FUEL_BAR_Z));
-		modelMatrix = glm::scale(modelMatrix, glm::vec3(player.fuel / FUEL_BAR_SCALE_X, 0.1f / FUEL_BAR_SCALE_Y, 0));
-		modelMatrix = glm::translate(modelMatrix, glm::vec3(HALF_RECTANGLE_LENGTH, 0, 0));
+		modelMatrix *= Transform3D::MyTranslate(FUEL_BAR_X, FUEL_BAR_Y, FUEL_BAR_Z);
+		modelMatrix *= Transform3D::MyScale(player.fuel / FUEL_BAR_SCALE_X, 0.1f / FUEL_BAR_SCALE_Y, 0);
+		modelMatrix *= Transform3D::MyTranslate(HALF_RECTANGLE_LENGTH, 0, 0);
 		Render2DMesh(meshes[GREEN_PLATFORM_NAME], shaders["VertexColor"], modelMatrix);
 	}
 
@@ -333,8 +332,9 @@ void Tema2::Update(float deltaTimeSeconds)
 
 			// draw them
 			glm::mat4 modelMatrix = glm::mat4(1);
-			modelMatrix = glm::translate(modelMatrix, glm::vec3(platforms[i].pos.x, platforms[i].pos.y, platforms[i].pos.z));
-			modelMatrix = glm::scale(modelMatrix, glm::vec3(PLATFORM_WIDTH / 2, PLATFORM_HEIGHT, platforms[i].lenght / 2));
+			modelMatrix *= Transform3D::MyTranslate(platforms[i].pos.x, platforms[i].pos.y, platforms[i].pos.z);
+			modelMatrix *= Transform3D::MyScale(PLATFORM_WIDTH / 2, PLATFORM_HEIGHT, platforms[i].lenght / 2);
+
 			if (platforms[i].isTouched) RenderSimpleMesh(meshes[PURPLE_PLATFORM_NAME], shaders["VertexColor"], modelMatrix);
 			else RenderSimpleMesh(meshes[platform_mesh_name[platforms[i].type]], shaders["VertexColor"], modelMatrix);
 		}
@@ -365,7 +365,7 @@ void Tema2::Update(float deltaTimeSeconds)
 		if (cameraIsThirdPerson)
 		{
 			glm::mat4 modelMatrix = glm::mat4(1);
-			modelMatrix = glm::translate(modelMatrix, glm::vec3(player.pos.x, player.pos.y, player.pos.z));
+			modelMatrix *= Transform3D::MyTranslate(player.pos.x, player.pos.y, player.pos.z);
 			if (player.endNoiseAnimation()) RenderSimpleMesh(meshes["player"], shaders["PatrickShader"], modelMatrix);
 			else RenderDistortedMesh(meshes["player"], shaders["PatrickShader"], modelMatrix);
 		}
@@ -374,15 +374,11 @@ void Tema2::Update(float deltaTimeSeconds)
 
 void Tema2::setCameraFirstPerson()
 {
-	auto camera = GetSceneCamera();
-	camera->SetPosition(glm::vec3(CAMERA_X_FIRST + player.pos.x, CAMERA_Y_FIRST + player.pos.y, CAMERA_Z_FIRST));
-	camera->Update();
+	camera->position = glm::vec3(player.pos.x + CAMERA_X_THIRD, player.pos.y + CAMERA_Y_THIRD - 1, CAMERA_Z_THIRD - 5);
 }
 void Tema2::setCameraThirdPerson()
 {
-	auto camera = GetSceneCamera();
-	camera->SetPosition(glm::vec3(CAMERA_X_THIRD, CAMERA_Y_THIRD, CAMERA_Z_THIRD));
-	camera->Update();
+	camera->Set(glm::vec3(CAMERA_X_THIRD, CAMERA_Y_THIRD, CAMERA_Z_THIRD), glm::vec3(0, 1, 0), glm::vec3(0, 1, 0));
 }
 
 
@@ -451,6 +447,10 @@ void Tema2::RenderSimpleMesh(Mesh* mesh, Shader* shader, const glm::mat4& modelM
 	// render an object using the specified shader and the specified position
 	glUseProgram(shader->program);
 
+
+	int location = glGetUniformLocation(shader->program, "v_color");
+	glUniform3f(location, 0.5f, 1, 0.5f);
+
 	// TODO : get shader location for uniform mat4 "Model"
 	GLint modelLocation = glGetUniformLocation(shader->GetProgramID(), "Model");
 
@@ -462,14 +462,14 @@ void Tema2::RenderSimpleMesh(Mesh* mesh, Shader* shader, const glm::mat4& modelM
 	GLint viewLocation = glGetUniformLocation(shader->GetProgramID(), "View");
 
 	// TODO : set shader uniform "View" to viewMatrix
-	glm::mat4 viewMatrix = GetSceneCamera()->GetViewMatrix();
+	glm::mat4 viewMatrix = camera->GetViewMatrix();
 	glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(viewMatrix));
 
 	// TODO : get shader location for uniform mat4 "Projection"
 	GLint projLocation = glGetUniformLocation(shader->GetProgramID(), "Projection");
 
 	// TODO : set shader uniform "Projection" to projectionMatrix
-	glm::mat4 projectionMatrix = GetSceneCamera()->GetProjectionMatrix();
+	glm::mat4 projectionMatrix = glm::perspective(RADIANS(60), window->props.aspectRatio, 0.01f, 200.0f);
 	glUniformMatrix4fv(projLocation, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 
 	// get + set  time
@@ -549,7 +549,6 @@ void Tema2::Render2DMesh(Mesh* mesh, Shader* shader, const glm::mat4& modelMatri
 	GLint projLocation = glGetUniformLocation(shader->GetProgramID(), "Projection");
 
 	// TODO : set shader uniform "Projection" to projectionMatrix
-	//glm::mat4 projectionMatrix = GetSceneCamera()->GetProjectionMatrix();
 	glm::mat4 projectionMatrix = glm::mat4(1);
 	glUniformMatrix4fv(projLocation, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 

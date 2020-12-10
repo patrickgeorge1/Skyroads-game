@@ -72,3 +72,7 @@
 #define GAME_OVER_DEPTH -3
 #define GAME_OVER_FALLING_STEP 0.05f
 #define NOISE_ANIMATION_DURATION 300
+
+
+//#define Scale glm::scale   TODO modified
+//#define Translate glm::translate

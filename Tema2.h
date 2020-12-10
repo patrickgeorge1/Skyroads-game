@@ -5,6 +5,7 @@
 #include <Core/Engine.h>
 
 #include "../Tema2/Utils/Position/Position3D.h"
+#include "../Tema2/Camera/LabCamera.h"
 #include "Utils/Platform/Platform.h"
 #include "Utils/Player/Player.h"
 #include "Defines.h"
@@ -52,4 +53,6 @@ protected:
 	Player player = Player();
 	Platform platforms[MAX_PLATFORM_NUMBER];
 	int lastPlatformOnColumn[MAX_PLATFORM_COLUMNS] = { 0 };
+	MyCamera* camera;
+	
 };
